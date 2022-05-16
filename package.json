@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mlaversin/MorganLaversin_6_16052022.git"
+  },
+  "author": "mlaversin",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mlaversin/MorganLaversin_6_16052022/issues"
+  },
+  "homepage": "https://github.com/mlaversin/MorganLaversin_6_16052022#readme"
+}
