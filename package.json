@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/mlaversin/MorganLaversin_6_16052022/issues"
   },
-  "homepage": "https://github.com/mlaversin/MorganLaversin_6_16052022#readme"
+  "homepage": "https://github.com/mlaversin/MorganLaversin_6_16052022#readme",
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "mongoose": "^6.3.3",
+    "nodemon": "^2.0.16"
+  }
 }
