@@ -2,6 +2,8 @@ require('dotenv').config()
 const express = require('express')
 const mongoose = require('mongoose')
 
+const userRoutes = require('./routes/user')
+
 const app = express()
 
 mongoose
@@ -27,13 +29,6 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/api/sauces', (req, res, next) => {
-  console.log('toutes les sauces')
-})
-
-app.post('/api/sauces', (req, res, next) => {
-  console.log(req.body)
-  res.status(201).json({ message: 'Objet créé !' })
-})
+app.use('/api/auth', userRoutes)
 
 module.exports = app
