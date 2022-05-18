@@ -3,11 +3,14 @@ const express = require('express')
 const mongoose = require('mongoose')
 const path = require('path')
 
+const app = express()
+
 const userRoutes = require('./routes/user')
 const sauceRoutes = require('./routes/sauce')
 
-const app = express()
-
+/*
+ * Configure database connection
+ */
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URI}`,
@@ -16,8 +19,14 @@ mongoose
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Échec de la connexion à MongoDB !'))
 
+/*
+ * Parses incoming JSON requests and puts the parsed data in req.body
+ */
 app.use(express.json())
 
+/*
+ * Allows cross-origin requests
+ */
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader(
