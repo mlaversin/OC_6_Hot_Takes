@@ -1,5 +1,6 @@
 const Sauce = require('../models/Sauce')
 const fs = require('fs')
+const removeUploadedFiles = require('multer/lib/remove-uploaded-files')
 
 /*
  * This function is used to add a sauce in the database
@@ -100,4 +101,71 @@ exports.deleteSauce = (req, res, next) => {
       })
     })
     .catch((error) => res.status(500).json({ error }))
+}
+
+/*
+ * This function is used to add/remove a like/dislike
+ */
+exports.likeSauce = (req, res, next) => {
+  const like = req.body.like
+
+  Sauce.findOne({ _id: req.params.id })
+    .then((sauce) => {
+      // to check whether the user has already rated the sauce or not
+      const noRating =
+        !sauce.usersLiked.includes(req.body.userId) &&
+        !sauce.usersDisliked.includes(req.body.userId)
+      // the user who rates is not the one who added the sauce
+      if (sauce.userId !== req.body.userId) {
+        if (noRating && like === 1) {
+          Sauce.updateOne(
+            { _id: req.params.id },
+            {
+              $push: { usersLiked: req.body.userId },
+              $inc: { likes: +1 },
+            }
+          )
+            .then(() => res.status(200).json({ message: 'like added !' }))
+            .catch((error) => res.status(400).json({ error }))
+        } else if (noRating && like === -1) {
+          Sauce.updateOne(
+            { _id: req.params.id },
+            {
+              $push: { usersDisliked: req.body.userId },
+              $inc: { dislikes: +1 },
+            }
+          )
+            .then(() => res.status(200).json({ message: 'dislike added !' }))
+            .catch((error) => res.status(400).json({ error }))
+        } else {
+          if (sauce.usersLiked.includes(req.body.userId)) {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $pull: { usersLiked: req.body.userId },
+                $inc: { likes: -1 },
+              }
+            )
+              .then(() => res.status(200).json({ message: 'like removed !' }))
+              .catch((error) => res.status(400).json({ error }))
+          } else {
+            Sauce.updateOne(
+              { _id: req.params.id },
+              {
+                $pull: { usersDisliked: req.body.userId },
+                $inc: { dislikes: -1 },
+              }
+            )
+              .then(() =>
+                res.status(200).json({ message: 'dislike removed !' })
+              )
+              .catch((error) => res.status(400).json({ error }))
+          }
+        }
+      } else {
+        // the user who rates is the one who added the sauce
+        console.log('Error : users cannot rate their own sauces')
+      }
+    })
+    .catch((error) => res.status(400).json({ error }))
 }
