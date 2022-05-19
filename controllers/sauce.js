@@ -115,56 +115,49 @@ exports.likeSauce = (req, res, next) => {
       const noRating =
         !sauce.usersLiked.includes(req.body.userId) &&
         !sauce.usersDisliked.includes(req.body.userId)
-      // the user who rates is not the one who added the sauce
-      if (sauce.userId !== req.body.userId) {
-        if (noRating && like === 1) {
-          Sauce.updateOne(
-            { _id: req.params.id },
-            {
-              $push: { usersLiked: req.body.userId },
-              $inc: { likes: +1 },
-            }
-          )
-            .then(() => res.status(200).json({ message: 'like added !' }))
-            .catch((error) => res.status(400).json({ error }))
-        } else if (noRating && like === -1) {
-          Sauce.updateOne(
-            { _id: req.params.id },
-            {
-              $push: { usersDisliked: req.body.userId },
-              $inc: { dislikes: +1 },
-            }
-          )
-            .then(() => res.status(200).json({ message: 'dislike added !' }))
-            .catch((error) => res.status(400).json({ error }))
-        } else {
-          if (sauce.usersLiked.includes(req.body.userId)) {
-            Sauce.updateOne(
-              { _id: req.params.id },
-              {
-                $pull: { usersLiked: req.body.userId },
-                $inc: { likes: -1 },
-              }
-            )
-              .then(() => res.status(200).json({ message: 'like removed !' }))
-              .catch((error) => res.status(400).json({ error }))
-          } else {
-            Sauce.updateOne(
-              { _id: req.params.id },
-              {
-                $pull: { usersDisliked: req.body.userId },
-                $inc: { dislikes: -1 },
-              }
-            )
-              .then(() =>
-                res.status(200).json({ message: 'dislike removed !' })
-              )
-              .catch((error) => res.status(400).json({ error }))
+
+      if (noRating && like === 1) {
+        Sauce.updateOne(
+          { _id: req.params.id },
+          {
+            $push: { usersLiked: req.body.userId },
+            $inc: { likes: +1 },
           }
-        }
+        )
+          .then(() => res.status(200).json({ message: 'like ajouté !' }))
+          .catch((error) => res.status(400).json({ error }))
+      } else if (noRating && like === -1) {
+        Sauce.updateOne(
+          { _id: req.params.id },
+          {
+            $push: { usersDisliked: req.body.userId },
+            $inc: { dislikes: +1 },
+          }
+        )
+          .then(() => res.status(200).json({ message: 'dislike ajouté !' }))
+          .catch((error) => res.status(400).json({ error }))
       } else {
-        // the user who rates is the one who added the sauce
-        console.log('Error : users cannot rate their own sauces')
+        if (sauce.usersLiked.includes(req.body.userId)) {
+          Sauce.updateOne(
+            { _id: req.params.id },
+            {
+              $pull: { usersLiked: req.body.userId },
+              $inc: { likes: -1 },
+            }
+          )
+            .then(() => res.status(200).json({ message: 'like supprimé !' }))
+            .catch((error) => res.status(400).json({ error }))
+        } else if (sauce.usersDisliked.includes(req.body.userId)) {
+          Sauce.updateOne(
+            { _id: req.params.id },
+            {
+              $pull: { usersDisliked: req.body.userId },
+              $inc: { dislikes: -1 },
+            }
+          )
+            .then(() => res.status(200).json({ message: 'dislike supprimé !' }))
+            .catch((error) => res.status(400).json({ error }))
+        }
       }
     })
     .catch((error) => res.status(400).json({ error }))
