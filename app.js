@@ -28,7 +28,7 @@ app.use(express.json())
 /*
  * Secure the app by setting various HTTP headers
  */
-app.use(helmet())
+app.use(helmet({ crossOriginResourcePolicy: false }))
 
 /*
  * Allows cross-origin requests
