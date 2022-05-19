@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express')
+const helmet = require('helmet')
 const mongoose = require('mongoose')
 const path = require('path')
 
@@ -23,6 +24,11 @@ mongoose
  * Parses incoming JSON requests and puts the parsed data in req.body
  */
 app.use(express.json())
+
+/*
+ * Secure the app by setting various HTTP headers
+ */
+app.use(helmet())
 
 /*
  * Allows cross-origin requests
