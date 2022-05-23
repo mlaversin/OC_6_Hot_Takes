@@ -60,6 +60,8 @@ exports.getOneSauce = (req, res, next) => {
  * This function is used to update a sauce in the database
  */
 exports.modifySauce = (req, res, next) => {
+  // console.log(JSON.parse(req.body.sauce))
+
   const sauceObject = req.file
     ? {
         ...JSON.parse(req.body.sauce),
@@ -69,22 +71,29 @@ exports.modifySauce = (req, res, next) => {
       }
     : { ...req.body }
 
-  if (req.file) {
-    Sauce.findOne({ _id: req.params.id })
-      .then((sauce) => {
-        const filename = sauce.imageUrl.split('/uploads/')[1]
-        fs.unlink(`uploads/${filename}`, (error) => {
-          if (error) throw error
+  if (sauceObject.userId === req.auth.userId) {
+    if (req.file) {
+      Sauce.findOne({ _id: req.params.id })
+        .then((sauce) => {
+          const filename = sauce.imageUrl.split('/uploads/')[1]
+          fs.unlink(`uploads/${filename}`, (error) => {
+            if (error) throw error
+          })
         })
-      })
-      .catch((error) => res.status(500).json({ error }))
+        .catch((error) => res.status(500).json({ error }))
+    }
+    //console.log(req.body, req.auth.userId)
+    Sauce.updateOne(
+      { _id: req.params.id },
+      { ...sauceObject, _id: req.params.id }
+    )
+      .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
+      .catch((error) => res.status(400).json({ error }))
+  } else {
+    return res.status(403).json({
+      error: "Vous n'êtes pas autorisé à effectuer cette action",
+    })
   }
-  Sauce.updateOne(
-    { _id: req.params.id },
-    { ...sauceObject, _id: req.params.id }
-  )
-    .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
-    .catch((error) => res.status(400).json({ error }))
 }
 
 /*
@@ -93,12 +102,18 @@ exports.modifySauce = (req, res, next) => {
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
-      const filename = sauce.imageUrl.split('/uploads/')[1]
-      fs.unlink(`uploads/${filename}`, () => {
-        Sauce.deleteOne({ _id: req.params.id })
-          .then(() => res.status(200).json({ message: 'Sauce supprimée !' }))
-          .catch((error) => res.status(400).json({ error }))
-      })
+      if (sauce.userId === req.auth.userId) {
+        const filename = sauce.imageUrl.split('/uploads/')[1]
+        fs.unlink(`uploads/${filename}`, () => {
+          Sauce.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Sauce supprimée !' }))
+            .catch((error) => res.status(400).json({ error }))
+        })
+      } else {
+        return res
+          .status(403)
+          .json({ erreur: "Vous n'êtes pas autorisé à effecter cette action." })
+      }
     })
     .catch((error) => res.status(500).json({ error }))
 }
