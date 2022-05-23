@@ -1,6 +1,5 @@
 const Sauce = require('../models/Sauce')
 const fs = require('fs')
-const removeUploadedFiles = require('multer/lib/remove-uploaded-files')
 
 /*
  * This function is used to add a sauce in the database
@@ -20,7 +19,7 @@ exports.createSauce = (req, res, next) => {
   })
   sauce
     .save()
-    .then(() => res.status(201).json({ message: 'Sauce enregistrée !' }))
+    .then(() => res.status(201).json({ message: 'Sauce has been added !' }))
     .catch((error) => res.status(400).json({ error }))
 }
 
@@ -33,9 +32,7 @@ exports.getAllSauces = (req, res, next) => {
       res.status(200).json(sauces)
     })
     .catch((error) => {
-      res.status(400).json({
-        error: error,
-      })
+      res.status(400).json({ error })
     })
 }
 
@@ -50,9 +47,7 @@ exports.getOneSauce = (req, res, next) => {
       res.status(200).json(sauce)
     })
     .catch((error) => {
-      res.status(404).json({
-        error: error,
-      })
+      res.status(404).json({ error })
     })
 }
 
@@ -78,17 +73,17 @@ exports.modifySauce = (req, res, next) => {
             if (error) throw error
           })
         })
-        .catch((error) => res.status(500).json({ error }))
+        .catch((error) => res.status(500).json({ error: error }))
     }
     Sauce.updateOne(
       { _id: req.params.id },
       { ...sauceObject, _id: req.params.id }
     )
-      .then(() => res.status(200).json({ message: 'Sauce modifiée !' }))
-      .catch((error) => res.status(400).json({ error }))
+      .then(() => res.status(200).json({ message: 'Sauce has been updated !' }))
+      .catch((error) => res.status(400).json({ error: error }))
   } else {
     return res.status(403).json({
-      error: "Vous n'êtes pas autorisé à effectuer cette action",
+      error: '403: unauthorized request',
     })
   }
 }
@@ -103,13 +98,13 @@ exports.deleteSauce = (req, res, next) => {
         const filename = sauce.imageUrl.split('/uploads/')[1]
         fs.unlink(`uploads/${filename}`, () => {
           Sauce.deleteOne({ _id: req.params.id })
-            .then(() => res.status(200).json({ message: 'Sauce supprimée !' }))
+            .then(() =>
+              res.status(200).json({ message: 'Sauce has been removed !' })
+            )
             .catch((error) => res.status(400).json({ error }))
         })
       } else {
-        return res
-          .status(403)
-          .json({ erreur: "Vous n'êtes pas autorisé à effecter cette action." })
+        return res.status(403).json({ error: '403: unauthorized request' })
       }
     })
     .catch((error) => res.status(500).json({ error }))
@@ -136,7 +131,7 @@ exports.likeSauce = (req, res, next) => {
             $inc: { likes: +1 },
           }
         )
-          .then(() => res.status(200).json({ message: 'like ajouté !' }))
+          .then(() => res.status(200).json({ message: 'like added !' }))
           .catch((error) => res.status(400).json({ error }))
       } else if (noRating && like === -1) {
         Sauce.updateOne(
@@ -146,7 +141,7 @@ exports.likeSauce = (req, res, next) => {
             $inc: { dislikes: +1 },
           }
         )
-          .then(() => res.status(200).json({ message: 'dislike ajouté !' }))
+          .then(() => res.status(200).json({ message: 'dislike added !' }))
           .catch((error) => res.status(400).json({ error }))
       } else {
         if (sauce.usersLiked.includes(req.body.userId)) {
@@ -157,7 +152,7 @@ exports.likeSauce = (req, res, next) => {
               $inc: { likes: -1 },
             }
           )
-            .then(() => res.status(200).json({ message: 'like supprimé !' }))
+            .then(() => res.status(200).json({ message: 'like deleted !' }))
             .catch((error) => res.status(400).json({ error }))
         } else if (sauce.usersDisliked.includes(req.body.userId)) {
           Sauce.updateOne(
@@ -167,7 +162,7 @@ exports.likeSauce = (req, res, next) => {
               $inc: { dislikes: -1 },
             }
           )
-            .then(() => res.status(200).json({ message: 'dislike supprimé !' }))
+            .then(() => res.status(200).json({ message: 'dislike deleted !' }))
             .catch((error) => res.status(400).json({ error }))
         }
       }
