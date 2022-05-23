@@ -60,8 +60,6 @@ exports.getOneSauce = (req, res, next) => {
  * This function is used to update a sauce in the database
  */
 exports.modifySauce = (req, res, next) => {
-  // console.log(JSON.parse(req.body.sauce))
-
   const sauceObject = req.file
     ? {
         ...JSON.parse(req.body.sauce),
@@ -82,7 +80,6 @@ exports.modifySauce = (req, res, next) => {
         })
         .catch((error) => res.status(500).json({ error }))
     }
-    //console.log(req.body, req.auth.userId)
     Sauce.updateOne(
       { _id: req.params.id },
       { ...sauceObject, _id: req.params.id }
