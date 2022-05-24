@@ -17,7 +17,7 @@ exports.signup = (req, res, next) => {
       user
         .save()
         .then(() =>
-          res.status(201).json({ message: 'New user has been created !' })
+          res.status(201).json({ message: '201: New user has been created !' })
         )
         .catch((error) => res.status(400).json({ error }))
     })
@@ -31,7 +31,9 @@ exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email })
     .then((user) => {
       if (!user) {
-        return res.status(401).json({ error: 'Wrong username or password !' })
+        return res
+          .status(401)
+          .json({ error: '401: Wrong username or password !' })
       }
       bcrypt
         .compare(req.body.password, user.password)
@@ -39,7 +41,7 @@ exports.login = (req, res, next) => {
           if (!valid) {
             return res
               .status(401)
-              .json({ error: 'Wrong username or password !' })
+              .json({ error: '401: Wrong username or password !' })
           }
           res.status(200).json({
             userId: user._id,
