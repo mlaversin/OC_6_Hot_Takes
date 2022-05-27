@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const helmet = require('helmet')
+const rateLimit = require('express-rate-limit')
 const mongoose = require('mongoose')
 const path = require('path')
 
@@ -29,6 +30,17 @@ app.use(express.json())
  * Secure the app by setting various HTTP headers
  */
 app.use(helmet({ crossOriginResourcePolicy: false }))
+
+/*
+ * Limit the number of requests from the same IP address
+ */
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+})
+app.use(limiter)
 
 /*
  * Allows cross-origin requests
