@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const mongooseErrors = require('mongoose-errors')
 
 const sauceSchema = mongoose.Schema({
   userId: { type: String, required: true },
@@ -7,22 +6,28 @@ const sauceSchema = mongoose.Schema({
     type: String,
     minLength: 3,
     maxLenght: 50,
-    match: [/^[a-zA-Z '-]*$/, 'Character(s) not allowed in the name field'],
+    match: [
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-]*$/,
+      'Character(s) not allowed in the name field',
+    ],
     required: true,
   },
   manufacturer: {
     type: String,
     minLength: 3,
     maxLenght: 50,
-    match: [/^[a-zA-Z '-]*$/, 'Character(s) not allowed in the name field'],
+    match: [
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-]*$/,
+      'Character(s) not allowed in the name field',
+    ],
     required: true,
   },
   description: {
     type: String,
     minLength: 10,
-    maxLenght: 300,
+    maxLenght: 500,
     match: [
-      /^[a-zA-Z '-:.?!]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-:.?!«»]*$/,
       'Character(s) not allowed in the description',
     ],
     required: true,
@@ -32,7 +37,7 @@ const sauceSchema = mongoose.Schema({
     minLength: 3,
     maxLenght: 50,
     match: [
-      /^[a-zA-Z '-]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-]*$/,
       'Character(s) not allowed in the main pepper ingredient field',
     ],
     required: true,
@@ -44,7 +49,5 @@ const sauceSchema = mongoose.Schema({
   usersLiked: { type: [String], required: true, default: [] },
   usersDisliked: { type: [String], required: true, default: [] },
 })
-
-sauceSchema.plugin(mongooseErrors)
 
 module.exports = mongoose.model('Sauce', sauceSchema)
