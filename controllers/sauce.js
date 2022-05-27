@@ -21,6 +21,7 @@ exports.createSauce = (req, res, next) => {
     .save()
     .then(() => res.status(201).json({ message: 'Sauce has been added !' }))
     .catch((error) => {
+      // the lines below delete the image that was mistakenly added to the upload folder
       const filename = sauce.imageUrl.split('/uploads/')[1]
       fs.unlink(`uploads/${filename}`, () => {
         console.log(error.info)
@@ -71,6 +72,7 @@ exports.modifySauce = (req, res, next) => {
       }
     : { ...req.body }
 
+  // the following line ensures that the user making the request is the one who added the sauce
   if (sauceObject.userId === req.auth.userId) {
     if (req.file) {
       Sauce.findOne({ _id: req.params.id })
@@ -80,17 +82,18 @@ exports.modifySauce = (req, res, next) => {
             if (error) throw error
           })
         })
-        .catch((error) => res.status(500).json({ error: error }))
+        .catch((error) => res.status(500).json({ error }))
     }
     Sauce.updateOne(
       { _id: req.params.id },
       { ...sauceObject, _id: req.params.id }
     )
       .then(() => res.status(200).json({ message: 'Sauce has been updated !' }))
-      .catch((error) => res.status(400).json({ error: error }))
+      .catch((error) => res.status(400).json({ error }))
   } else {
     return res.status(403).json({
-      error: '403: unauthorized request',
+      error:
+        '403: Forbidden - You do not have access rights to make this request',
     })
   }
 }
@@ -101,6 +104,7 @@ exports.modifySauce = (req, res, next) => {
 exports.deleteSauce = (req, res, next) => {
   Sauce.findOne({ _id: req.params.id })
     .then((sauce) => {
+      // the following line ensures that the user making the request is the one who added the sauce
       if (sauce.userId === req.auth.userId) {
         const filename = sauce.imageUrl.split('/uploads/')[1]
         fs.unlink(`uploads/${filename}`, () => {
@@ -111,7 +115,10 @@ exports.deleteSauce = (req, res, next) => {
             .catch((error) => res.status(400).json({ error }))
         })
       } else {
-        return res.status(403).json({ error: '403: unauthorized request' })
+        return res.status(403).json({
+          error:
+            '403: Forbidden - You do not have access rights to make this request',
+        })
       }
     })
     .catch((error) => res.status(500).json({ error }))

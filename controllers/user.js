@@ -33,7 +33,7 @@ exports.login = (req, res, next) => {
       if (!user) {
         return res
           .status(401)
-          .json({ error: '401: Wrong username or password !' })
+          .json({ error: '401: Unauthorized - wrong username or password !' })
       }
       bcrypt
         .compare(req.body.password, user.password)
@@ -41,13 +41,17 @@ exports.login = (req, res, next) => {
           if (!valid) {
             return res
               .status(401)
-              .json({ error: '401: Wrong username or password !' })
+              .json({
+                error: '401: Unauthorized - wrong username or password !',
+              })
           }
           res.status(200).json({
             userId: user._id,
-            token: jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
-              expiresIn: '24h',
-            }),
+            token: jwt.sign(
+              { userId: user._id },
+              process.env.JWT_SECRET,
+              {expiresIn: '24h',}
+            ),
           })
         })
         .catch((error) => res.status(500).json({ error }))
