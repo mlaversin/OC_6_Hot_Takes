@@ -7,7 +7,7 @@ const sauceSchema = mongoose.Schema({
     minLength: 3,
     maxLenght: 50,
     match: [
-      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇñÑ '-]*$/,
       'Character(s) not allowed in the name field',
     ],
     required: true,
@@ -17,7 +17,7 @@ const sauceSchema = mongoose.Schema({
     minLength: 3,
     maxLenght: 50,
     match: [
-      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇñÑ '-]*$/,
       'Character(s) not allowed in the name field',
     ],
     required: true,
@@ -27,7 +27,7 @@ const sauceSchema = mongoose.Schema({
     minLength: 10,
     maxLenght: 500,
     match: [
-      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-:.?!«»]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇñÑ '-:.?!«»]*$/,
       'Character(s) not allowed in the description',
     ],
     required: true,
@@ -37,7 +37,7 @@ const sauceSchema = mongoose.Schema({
     minLength: 3,
     maxLenght: 50,
     match: [
-      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇ '-]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇñÑ '-]*$/,
       'Character(s) not allowed in the main pepper ingredient field',
     ],
     required: true,
