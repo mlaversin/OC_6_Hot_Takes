@@ -8,11 +8,11 @@ module.exports = (req, res, next) => {
     // the following line allows user verification in the controller when deleting a sauce
     req.auth = { userId: userId }
     if (req.body.userId && req.body.userId !== userId) {
-      res.status(403).json({ error: '403: unauthorized request' })
+      res.status(403).json({ error })
     } else {
       next()
     }
   } catch (error) {
-    res.status(403).json({ error: '403: unauthorized request' })
+    res.status(403).json({ error })
   }
 }
