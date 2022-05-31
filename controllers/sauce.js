@@ -21,13 +21,7 @@ exports.createSauce = (req, res, next) => {
     .save()
     .then(() => res.status(201).json({ message: 'Sauce has been added !' }))
     .catch((error) => {
-      // the lines below delete the image that was mistakenly added to the upload folder
-      const filename = sauce.imageUrl.split('/uploads/')[1]
-      fs.unlink(`uploads/${filename}`, () => {
-        console.log(error.info)
-        const message = error.info
-        res.status(400).json({ message })
-      })
+      res.status(400).json({ error })
     })
 }
 
