@@ -35,8 +35,8 @@ app.use(helmet({ crossOriginResourcePolicy: false }))
  * Limit the number of requests from the same IP address
  */
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 5 * 60 * 1000,
+  max: 300,
   standardHeaders: true,
   legacyHeaders: false,
 })
