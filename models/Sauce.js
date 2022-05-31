@@ -27,7 +27,7 @@ const sauceSchema = mongoose.Schema({
     minLength: 10,
     maxLenght: 500,
     match: [
-      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇñÑ '-:.?!«»]*$/,
+      /^[a-zA-ZàâéèêëîïôùûæœÀÂÉÈÊËÎÏÔÛÙÆŒçÇñÑ '-:.?!«»/]*$/,
       'Character(s) not allowed in the description',
     ],
     required: true,
