@@ -15,9 +15,8 @@ module.exports = (req, res, next) => {
   if (schema.validate(req.body.password)) {
     next()
   } else {
-    return res.status(403).json({
-      error:
-        'The password must contain a minimum of 8 characters including at least one number and one capital letter (spaces are not allowed)',
-    })
+    res.statusMessage =
+      'The password must contain a minimum of 8 characters including at least one number and one capital letter (spaces are not allowed)'
+    return res.status(400).send()
   }
 }
