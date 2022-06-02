@@ -73,7 +73,7 @@ exports.modifySauce = (req, res, next) => {
         .then((sauce) => {
           const filename = sauce.imageUrl.split('/uploads/')[1]
           fs.unlink(`uploads/${filename}`, (error) => {
-            if (error) throw error
+            if (error) console.error('ignored', error.message)
           })
         })
         .catch((error) => res.status(500).json({ error }))
