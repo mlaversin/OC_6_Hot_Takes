@@ -1,5 +1,6 @@
 const Sauce = require('../models/Sauce')
 const fs = require('fs')
+const delFile = require('../services/file')
 
 /*
  * This function is used to add a sauce in the database
@@ -72,9 +73,10 @@ exports.modifySauce = (req, res, next) => {
       Sauce.findOne({ _id: req.params.id })
         .then((sauce) => {
           const filename = sauce.imageUrl.split('/uploads/')[1]
-          fs.unlink(`uploads/${filename}`, (error) => {
-            if (error) console.error('ignored', error.message)
-          })
+          delFile(filename)
+          // fs.unlink(`uploads/${filename}`, (error) => {
+          //   if (error) console.error('ignored', error.message)
+          // })
         })
         .catch((error) => res.status(500).json({ error }))
     }
@@ -101,7 +103,7 @@ exports.deleteSauce = (req, res, next) => {
       // the following line ensures that the user making the request is the one who added the sauce
       if (sauce.userId === req.auth.userId) {
         const filename = sauce.imageUrl.split('/uploads/')[1]
-        fs.unlink(`uploads/${filename}`, () => {
+        delFile(filename, () => {
           Sauce.deleteOne({ _id: req.params.id })
             .then(() =>
               res.status(200).json({ message: 'Sauce has been removed !' })
